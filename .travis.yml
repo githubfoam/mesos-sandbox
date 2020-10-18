@@ -36,6 +36,10 @@ matrix:
       script:
         - sudo make deploy-libvirt
         - sudo make deploy-vagrant
-        - sudo make deploy-puppet
+        - echo "Downloading DC/OS installer"
+        - wget -O dcos/dcos_generate_config.sh -c https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+        - sudo -mkdir -v vagrant/var-cache-apt-archives
+        - sudo dcos dcos/dcos_generate_config.sh vagrant/var-cache-apt-archives
+        # - sudo make deploy-puppet
       after_success:
         - deactivate        

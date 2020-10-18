@@ -1,65 +1,51 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+  
+  NODES = 4
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
+  config.vm.box = "debian/buster64"
+  config.vm.synced_folder "var-cache-apt-archives", "/var/cache/apt/archives", type: "nfs", nfs_version: 4, linux__nfs_options: ['rw','no_subtree_check','all_squash','async']
 
-ANSIBLE_GROUPS = {
-              "master" => ["node1"],
-              "nodes" => ["node2", "node3", "node4"],
-              "all_groups:children" => ["master", "nodes"]
-            }
+  config.vm.provider "virtualbox" do |vb|
+    vb.linked_clone = true
+    vb.cpus = 2
+    vb.memory = 512
+  end
 
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get install -y apt-transport-https ca-certificates curl gnupg2
+    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+    apt-key fingerprint 0EBFCD88
+    echo "deb https://download.docker.com/linux/debian buster stable" > /etc/apt/sources.list.d/docker.list
+    apt-get update
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+    apt-get install -y unzip ip-set htop
+  SHELL
+  
+  hosts = "127.0.0.1 localhost\n192.168.100.99 dcos-bootstrap\n192.168.100.100 dcos-master\n"
+  (1..NODES).each do |id|
+    hosts << "192.168.100.10#{id} dcos-agent-#{id}\n"
+  end
+  config.vm.provision "shell", "inline": "echo -e '#{hosts}' > /etc/hosts"
+  
+  config.vm.define "dcos-bootstrap" do |node|
+    node.vm.hostname = "dcos-bootstrap"
+    node.vm.network "private_network", "ip": "192.168.100.99"
+    node.vm.synced_folder "../dcos", "/dcos", type: "rsync"
+  end
 
-Vagrant.configure(2) do |config|
-    config.vm.box = "bento/centos-7.8"
-    # Applies to all boxes created.
-    config.vm.provider "virtualbox" do | v |
-      v.memory = 4096
+  config.vm.define "dcos-master" do |node|
+    node.vm.hostname = "dcos-master"
+    node.vm.network "private_network", "ip": "192.168.100.100"
+    node.vm.provider "virtualbox" do |vb|
+      vb.memory = 4096
     end
+  end
 
-    # The master node
-    config.vm.define "node1" do |node1|
-        node1.vm.network "private_network", ip: "192.168.33.10"
-        node1.vm.hostname = "node1"
-        node1.vm.provision 'ansible_local' do |ansible|
-        #node1.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-            ansible.groups = ANSIBLE_GROUPS
-        end
+  (1..NODES).each do |vm_id|
+    config.vm.define "dcos-agent-#{vm_id}" do |node|
+      node.vm.hostname = "dcos-agent-#{vm_id}"
+      node.vm.network "private_network", ip: "192.168.100.10#{vm_id}"
     end
+  end
 
-    # Slaves
-    config.vm.define "node2" do |node2|
-        node2.vm.network "private_network", ip: "192.168.33.11"
-        node2.vm.hostname = "node2"
-        node2.vm.provision 'ansible_local' do |ansible|
-        #node2.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-            ansible.groups = ANSIBLE_GROUPS
-        end
-    end
-
-
-    config.vm.define "node3" do |node3|
-        node3.vm.network "private_network", ip: "192.168.33.12"
-        node3.vm.hostname = "node3"
-        node3.vm.provision 'ansible_local' do |ansible|
-        #node3.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-            ansible.groups = ANSIBLE_GROUPS
-        end
-    end
-
-    config.vm.define "node4" do |node4|
-        node4.vm.network "private_network", ip: "192.168.33.13"
-        node4.vm.hostname = "node4"
-        node4.vm.provision 'ansible_local' do |ansible|
-        #node4.vm.provision "ansible" do |ansible|
-            ansible.playbook = "playbook.yml"
-            ansible.groups = ANSIBLE_GROUPS
-        end
-    end
 end
