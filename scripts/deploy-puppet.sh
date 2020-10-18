@@ -14,7 +14,7 @@ echo "==========================================================================
 vagrant box add "bento/centos-7.8" --provider=virtualbox
 vagrant mutate "bento/centos-7.8" libvirt
 vagrant init --template Vagrantfile.provision.puppet.erb
-vagrant up --provider=libvirt
+vagrant up --provider=libvirt node1
 
 # Ansible provision OK
 #https://github.com/chef/bento/tree/master/packer_templates/centos
