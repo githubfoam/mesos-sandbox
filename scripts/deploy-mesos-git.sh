@@ -35,7 +35,7 @@ cd mesos
 # Bootstrap (Only required if building from git repository).
 ./bootstrap
 
-Configure and build.
+# Configure and build.
 mkdir build
 cd build
 ../configure
