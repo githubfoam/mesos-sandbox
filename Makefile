@@ -1,6 +1,9 @@
 IMAGE := alpine/fio
 APP:="scripts/usernetes-containerd.sh"
 
+deploy-mesos:
+	bash scripts/deploy-mesos.sh
+
 deploy-puppet:
 	bash scripts/deploy-puppet.sh
 

@@ -8,23 +8,24 @@ matrix:
   fast_finish: true
   include:
 
-    # - name: "deploy vagrant chef provisioning - focal"
-    #   dist: focal
-    #   language: python
-    #   # python: 3.7
-    #   before_install:
-    #     - pip3 install virtualenv
-    #     - virtualenv -p $(which python3) ~venvpy3
-    #     - source ~venvpy3/bin/activate
-    #     - pip install -r requirements.txt
-    #   script:
-    #     - sudo make deploy-libvirt
-    #     - sudo make deploy-vagrant
-    #     - sudo make deploy-chef
-    #   after_success:
-    #     - deactivate  
+    # http://mesos.apache.org/documentation/latest/building/
+    - name: "build mesos - xenial"
+      dist: xenial
+      language: python
+      # python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+        - pip install -r requirements.txt
+      script:
+        # - sudo make deploy-libvirt
+        # - sudo make deploy-vagrant
+        - sudo make deploy-mesos
+      after_success:
+        - deactivate  
 
-    - name: "deploy vagrant puppet provisioning - focal"
+    - name: "deploy dcos - focal"
       dist: focal
       language: python
       # python: 3.7
@@ -34,18 +35,15 @@ matrix:
         - source ~venvpy3/bin/activate
         - pip install -r requirements.txt
       script:
-        # - sudo make deploy-libvirt
-        # - sudo make deploy-vagrant
         - echo "Downloading DC/OS installer"
         - sudo mkdir -v dcos
         - sudo wget -O dcos/dcos_generate_config.sh -c https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
         # - sudo mkdir -v vagrant/var-cache-apt-archives
         # - sudo dcos dcos/dcos_generate_config.sh vagrant/var-cache-apt-archives
-        # - sudo make deploy-puppet
       after_success:
         - deactivate 
 
-    - name: "deploy vagrant puppet provisioning - bionic"
+    - name: "deploy dcos - bionic"
       dist: bionic
       language: python
       # python: 3.7
@@ -55,13 +53,10 @@ matrix:
         - source ~venvpy3/bin/activate
         - pip install -r requirements.txt
       script:
-        # - sudo make deploy-libvirt
-        # - sudo make deploy-vagrant
         - echo "Downloading DC/OS installer"
         - sudo mkdir -v dcos
         - sudo wget -O dcos/dcos_generate_config.sh -c https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
-        - sudo mkdir -vp vagrant/var-cache-apt-archives
-        - sudo dcos dcos/dcos_generate_config.sh vagrant/var-cache-apt-archives
-        # - sudo make deploy-puppet
+        # - sudo mkdir -vp vagrant/var-cache-apt-archives
+        # - sudo dcos dcos/dcos_generate_config.sh vagrant/var-cache-apt-archives
       after_success:
         - deactivate        

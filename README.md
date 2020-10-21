@@ -11,5 +11,4 @@ https://dcos.io/
 ~~~
 http://mesos.apache.org/documentation/latest/building/
 
-http://mesos.apache.org/
 ~~~
