@@ -60,7 +60,7 @@ matrix:
         - echo "Downloading DC/OS installer"
         - sudo mkdir -v dcos
         - sudo wget -O dcos/dcos_generate_config.sh -c https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
-        - sudo mkdir -v vagrant/var-cache-apt-archives
+        - sudo mkdir -vp vagrant/var-cache-apt-archives
         - sudo dcos dcos/dcos_generate_config.sh vagrant/var-cache-apt-archives
         # - sudo make deploy-puppet
       after_success:
