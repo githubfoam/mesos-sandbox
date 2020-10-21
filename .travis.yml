@@ -19,11 +19,10 @@ matrix:
         - source ~venvpy3/bin/activate
         - pip install -r requirements.txt
       script:
-        # - sudo make deploy-libvirt
-        # - sudo make deploy-vagrant
         - sudo make deploy-mesos-git
       after_success:
-        - deactivate      
+        - deactivate   
+           
     # http://mesos.apache.org/documentation/latest/building/
     - name: "build mesos - xenial"
       dist: xenial
@@ -35,8 +34,6 @@ matrix:
         - source ~venvpy3/bin/activate
         - pip install -r requirements.txt
       script:
-        # - sudo make deploy-libvirt
-        # - sudo make deploy-vagrant
         - sudo make deploy-mesos
       after_success:
         - deactivate  
