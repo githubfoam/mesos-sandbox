@@ -32,7 +32,8 @@ apt-get install -yqq build-essential python-dev python-six python-virtualenv lib
 
 echo "=========================Building Mesos (Posix)================================================================"
 # Change working directory.
-cd mesos
+ls -l
+cd mesos-*
 
 # Bootstrap (Only required if building from git repository).
 ./bootstrap
