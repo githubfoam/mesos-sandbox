@@ -30,8 +30,7 @@ git clone https://gitbox.apache.org/repos/asf/mesos.git
 
 echo "=========================Building Mesos (Posix)================================================================"
 # Change working directory.
-ls -l
-cd mesos-*
+cd mesos
 
 # Bootstrap (Only required if building from git repository).
 ./bootstrap
