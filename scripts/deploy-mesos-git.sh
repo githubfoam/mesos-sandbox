@@ -5,12 +5,6 @@ set -o nounset
 set -o xtrace
 # set -eox pipefail #safety for script
 
-echo "=========================Downloading Mesos================================================================"
-# Download the latest stable release from Apache
-# export VAGRANT_CURRENT_VERSION="1.10.0"
-# wget http://www.apache.org/dist/mesos/1.10.0/mesos-1.10.0.tar.gz
-wget http://www.apache.org/dist/mesos/1.10.0/mesos-1.10.0.tar.gz
-tar -zxf mesos-1.10.0.tar.gz
 
 echo "=========================System Requirements================================================================"
 
@@ -30,17 +24,21 @@ apt-get install -yqq autoconf libtool
 # Install other Mesos dependencies.
 apt-get install -yqq build-essential python-dev python-six python-virtualenv libcurl4-nss-dev libsasl2-dev libsasl2-modules maven libapr1-dev libsvn-dev zlib1g-dev iputils-ping
 
+echo "=========================Downloading Mesos================================================================"
+# Clone the Mesos git repository (Advanced Users Only)
+git clone https://gitbox.apache.org/repos/asf/mesos.git
+
 echo "=========================Building Mesos (Posix)================================================================"
 # Change working directory.
 ls -l
 cd mesos-*
 
 # Bootstrap (Only required if building from git repository).
-# ./bootstrap
+./bootstrap
 
 # Configure and build.
-mkdir build
-cd build
-../configure
-make
+# mkdir build
+# cd build
+# ../configure
+# make
 echo "========================================================================================="
