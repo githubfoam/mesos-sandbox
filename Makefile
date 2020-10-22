@@ -7,9 +7,6 @@ deploy-mesos-git:
 deploy-mesos:
 	bash scripts/deploy-mesos.sh
 
-deploy-puppet:
-	bash scripts/deploy-puppet.sh
-
 deploy-boxes:
 	bash scripts/deploy-boxes.sh
 
